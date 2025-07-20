@@ -1,5 +1,7 @@
 // public/js/login.js
 
+const API_BASE_URL = 'https://auraflex-app.onrender.com'; // Replace with your actual Render URL
+
 class AuthManager {
   constructor() {
     this.curStep = 1;
@@ -69,7 +71,7 @@ class AuthManager {
       return;
     }
     try {
-      const res = await fetch('/auth/login', {
+      const res = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, password })
@@ -154,7 +156,7 @@ class AuthManager {
     }
     const payload = { ...this.tempCredentials, ...this.onboardingData };
     try {
-      const res = await fetch('/auth/register', {
+      const res = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify(payload)

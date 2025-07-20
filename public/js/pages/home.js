@@ -1,22 +1,33 @@
-import { AppState, showToast, refreshAppState } from '../common.js';
+import { AppState, showToast, updateGlobalState, API_BASE_URL } from '../common.js';
 
 // --- MODULE STATE & DOM ---
 let macrosChart = null;
 let hydrationChart = null;
 const dom = {};
 
+// --- API INTERFACE ---
+const api = {
+    deleteFoodLog: async (logId) => {
+        const res = await fetch(`${API_BASE_URL}/api/log-food/${logId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${AppState.token}` }
+        });
+        if (!res.ok) throw new Error('Failed to delete food log.');
+        return res.json();
+    }
+};
+
 // --- CACHE DOM ELEMENTS ---
 const cacheDom = () => {
     const ids = ['welcome-message', 'goal-calories-header', 'consumed-card', 'consumed-calories-card', 'goal-calories-card', 'burned-calories-card', 'net-calories-card', 'progress-bar', 'progress-percentage', 'progress-text', 'macrosChart', 'macros-legend', 'hydration-total', 'hydrationChart', 'minus-glass-btn', 'glass-count', 'plus-glass-btn', 'activity-streak', 'consumed-food-modal', 'close-consumed-food-modal', 'consumed-food-list'];
-    ids.forEach(id => {
-        const key = id.replace(/-(\w)/g, (_, p1) => p1.toUpperCase());
-        dom[key] = document.getElementById(id);
-    });
+    ids.forEach(id => dom[id] = document.getElementById(id));
 };
 
 // --- RENDER FUNCTIONS ---
-const updateDOM = () => {
+const renderPage = () => {
     if (!AppState.isInitialized) return;
+    cacheDom(); 
+    
     const { profile, dailyStats, foodLogs } = AppState;
 
     dom.welcomeMessage.textContent = `Welcome back, ${profile.name.split(' ')[0]}!`;
@@ -31,9 +42,10 @@ const updateDOM = () => {
     dom.progressPercentage.textContent = `${progressPercentage}%`;
     dom.progressText.textContent = `${dailyStats.consumed || 0} / ${profile.goals.calories} kcal`;
 
-    updateHydrationUI(dailyStats.water || 0);
     renderMacrosChart(foodLogs || []);
-    renderHydrationChart();
+    renderHydrationChart(dailyStats.water || 0);
+    renderConsumedFoodModal();
+    setupEventListeners();
 };
 
 const renderMacrosChart = (foodLogs) => {
@@ -46,9 +58,7 @@ const renderMacrosChart = (foodLogs) => {
     const totalMacros = totalProtein + totalCarbs + totalFat;
 
     let dataPoints = [totalProtein, totalCarbs, totalFat];
-    if (totalMacros === 0) {
-        dataPoints = [1];
-    }
+    if (totalMacros === 0) dataPoints = [1];
 
     const data = {
         labels: ['Protein', 'Carbs', 'Fat'],
@@ -70,9 +80,7 @@ const renderMacrosChart = (foodLogs) => {
         return `
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: ${color}20;">
-                        <div class="w-3 h-3 rounded-full" style="background-color: ${color};"></div>
-                    </div>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background-color: ${color}20;"><div class="w-3 h-3 rounded-full" style="background-color: ${color};"></div></div>
                     <div><p class="text-sm text-gray-400">${label}</p></div>
                 </div>
                 <p class="font-semibold">${value.toFixed(1)}g</p>
@@ -80,36 +88,21 @@ const renderMacrosChart = (foodLogs) => {
     }).join('');
 };
 
-const renderHydrationChart = () => {
+const renderHydrationChart = (waterMl) => {
     const ctx = dom.hydrationChart?.getContext('2d');
     if (!ctx) return;
     if (hydrationChart) hydrationChart.destroy();
     
     const labels = ['12am', '3am', '6am', '9am', '12pm', '3pm', '6pm', 'Now'];
-    const dataPoints = labels.map((_, i) => {
-        const progress = i / (labels.length - 1);
-        return Math.round(progress * ((AppState.dailyStats.water || 0) / 250));
-    });
+    const dataPoints = labels.map((_, i) => (i / (labels.length - 1)) * (waterMl / 250));
 
     hydrationChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: [{
-                label: 'Hydration',
-                data: dataPoints,
-                fill: true,
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                borderColor: 'rgba(255, 255, 255, 0.5)',
-                tension: 0.4,
-                pointRadius: 0
-            }]
+            datasets: [{ label: 'Hydration', data: dataPoints, fill: true, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderColor: 'rgba(255, 255, 255, 0.5)', tension: 0.4, pointRadius: 0 }]
         },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            scales: { y: { display: false }, x: { display: false } },
-            plugins: { legend: { display: false } }
-        }
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { display: false }, x: { display: false } }, plugins: { legend: { display: false } } }
     });
 };
 
@@ -126,7 +119,10 @@ const renderConsumedFoodModal = () => {
                     <p class="font-semibold">${log.foodName}</p>
                     <p class="text-sm text-gray-400">${log.servingSize}</p>
                 </div>
-                <span class="font-bold text-yellow-400">${log.calories} kcal</span>
+                <div class="flex items-center gap-4">
+                    <span class="font-bold text-yellow-400">${log.calories} kcal</span>
+                    <button class="delete-food-log-btn text-gray-500 hover:text-red-500" data-id="${log._id}">❌</button>
+                </div>
             </div>
             <div class="text-xs text-gray-400 grid grid-cols-3 gap-2 mt-2 text-center">
                 <span>Protein: ${log.protein.toFixed(1)}g</span>
@@ -138,73 +134,60 @@ const renderConsumedFoodModal = () => {
 };
 
 // --- HYDRATION LOGIC ---
-const updateHydrationUI = (currentMl) => {
-    const glasses = Math.round(currentMl / 250);
-    const standardizedMl = glasses * 250;
-    
-    dom.hydrationTotal.innerHTML = `${standardizedMl} <span class="text-lg font-normal">ml</span>`;
-    dom.glassCount.textContent = glasses;
-    
-    AppState.dailyStats.water = standardizedMl;
-    renderHydrationChart();
-};
-
 const handleHydrationUpdate = async (amount) => {
     let currentMl = AppState.dailyStats.water || 0;
     const newMl = Math.max(0, currentMl + amount);
-
-    updateHydrationUI(newMl);
-
+    
     try {
-        const response = await fetch('/api/daily-stats', {
+        const response = await fetch(`${API_BASE_URL}/api/daily-stats`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${AppState.token}`
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AppState.token}` },
             body: JSON.stringify({ water: newMl })
         });
         if (!response.ok) throw new Error('Failed to save hydration data.');
-        console.log("Hydration data saved to DB.");
+        await updateGlobalState();
     } catch (error) {
         showToast(error.message, true);
-        updateHydrationUI(currentMl); // Revert UI on error
     }
 };
 
 // --- EVENT HANDLERS ---
-const setupEventListeners = () => {
-    dom.plusGlassBtn.onclick = () => handleHydrationUpdate(250);
-    dom.minusGlassBtn.onclick = () => handleHydrationUpdate(-250);
+const handleDeleteFoodLog = async (e) => {
+    const deleteBtn = e.target.closest('.delete-food-log-btn');
+    if (!deleteBtn) return;
 
-    dom.consumedCard.addEventListener('click', () => {
-        renderConsumedFoodModal();
-        dom.consumedFoodModal.classList.remove('hidden');
-        dom.consumedFoodModal.classList.add('flex');
-    });
-    dom.closeConsumedFoodModal.addEventListener('click', () => {
-        dom.consumedFoodModal.classList.add('hidden');
-        dom.consumedFoodModal.classList.remove('flex');
-    });
-    dom.consumedFoodModal.addEventListener('click', (e) => {
-        if (e.target === dom.consumedFoodModal) {
+    const logId = deleteBtn.dataset.id;
+    if (confirm('Are you sure you want to remove this food item?')) {
+        try {
+            await api.deleteFoodLog(logId);
+            await updateGlobalState();
+            showToast('Food log removed.');
+        } catch (error) {
+            showToast(error.message, true);
+        }
+    }
+};
+
+const setupEventListeners = () => {
+    document.body.addEventListener('click', (e) => {
+        if (e.target.id === 'plus-glass-btn') handleHydrationUpdate(250);
+        if (e.target.id === 'minus-glass-btn') handleHydrationUpdate(-250);
+        if (e.target.closest('#consumed-card')) {
+            renderConsumedFoodModal();
+            dom.consumedFoodModal.classList.remove('hidden');
+            dom.consumedFoodModal.classList.add('flex');
+        }
+        if (e.target.id === 'close-consumed-food-modal' || e.target === dom.consumedFoodModal) {
             dom.consumedFoodModal.classList.add('hidden');
             dom.consumedFoodModal.classList.remove('flex');
+        }
+        if (e.target.closest('.delete-food-log-btn')) {
+            handleDeleteFoodLog(e);
         }
     });
 };
 
 // --- INITIALIZATION ---
 export default function initializeHomePage() {
-    if (AppState.isInitialized) {
-        cacheDom();
-        updateDOM();
-        setupEventListeners();
-    } else {
-        document.addEventListener('app-initialized', () => {
-            cacheDom();
-            updateDOM();
-            setupEventListeners();
-        }, { once: true });
-    }
+    renderPage();
 }

@@ -1,32 +1,25 @@
-import { AppState, showToast, refreshAppState } from '../common.js';
+import { AppState, showToast, updateGlobalState, API_BASE_URL } from '../common.js';
 
 // --- MODULE STATE ---
 let logFoodState = {
-    currentData: null, // To store the fetched nutrition data before logging
+    currentData: null,
 };
 
 // --- DOM CACHE ---
 const dom = {};
 
 const cacheDom = () => {
-    // Main page elements
     dom.foodSearchBtn = document.getElementById('food-search-btn');
     dom.foodSearchResults = document.getElementById('food-search-results');
-    
-    // Modal elements
     dom.logFoodModal = document.getElementById('log-food-modal');
     dom.logFoodBtnDesktop = document.getElementById('log-food-btn-desktop');
     dom.closeLogFoodModalBtn = document.getElementById('close-log-food-modal');
-    
-    // Modal Step 1
     dom.logFoodStep1 = document.getElementById('log-food-step-1');
     dom.logFoodSearchForm = document.getElementById('log-food-search-form');
     dom.logFoodName = document.getElementById('log-food-name');
     dom.logFoodQuantity = document.getElementById('log-food-quantity');
     dom.logFoodUnit = document.getElementById('log-food-unit');
     dom.getNutritionBtn = document.getElementById('log-food-get-nutrition-btn');
-
-    // Modal Step 2
     dom.logFoodStep2 = document.getElementById('log-food-step-2');
     dom.logFoodResults = document.getElementById('log-food-results');
     dom.logFoodBackBtn = document.getElementById('log-food-back-btn');
@@ -109,7 +102,7 @@ const getNutritionInfo = async (foodName, quantity, unit, button, resultsContain
     resultsContainer.innerHTML = '';
 
     try {
-        const res = await fetch('/api/food-search', {
+        const res = await fetch(`${API_BASE_URL}/api/food-search`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AppState.token}` },
             body: JSON.stringify({ foodName, quantity, unit })
@@ -147,14 +140,15 @@ const handleConfirmLog = async () => {
     };
 
     try {
-        const res = await fetch('/api/log-food', {
+        const res = await fetch(`${API_BASE_URL}/api/log-food`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${AppState.token}` },
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error('Failed to log food.');
         
-        await refreshAppState(); // Refresh global state to get new food logs
+        await updateGlobalState(); 
+        
         showToast('Food logged successfully!');
         toggleModal(false);
 

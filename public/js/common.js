@@ -1,5 +1,11 @@
 // public/js/common.js
 
+// Import the function that will re-render the current page
+import { renderCurrentPage } from './main.js';
+
+// The base URL for your deployed backend. Replace this with your actual Render URL.
+export const API_BASE_URL = 'https://mahipal-fitness.onrender.com';
+
 export const AppState = {
   profile: null,
   workouts: [],
@@ -23,10 +29,11 @@ export function logout() {
   window.location.href = '/login.html';
 }
 
-export async function refreshAppState() {
+// This function is now the single source of truth for updating and re-rendering.
+export async function updateGlobalState() {
     if (!AppState.token) return;
     try {
-        const response = await fetch('/api/app-data', {
+        const response = await fetch(`${API_BASE_URL}/api/app-data`, {
             headers: { 'Authorization': `Bearer ${AppState.token}` }
         });
         if (!response.ok) throw new Error('Failed to refresh app data.');
@@ -37,12 +44,15 @@ export async function refreshAppState() {
         AppState.dailyStats = data.dailyStats;
         AppState.foodLogs = data.foodLogs;
         
-        // Dispatch a global event to notify all pages that the state has changed.
-        document.dispatchEvent(new CustomEvent('app-state-updated'));
-        console.log('Global AppState has been refreshed and event dispatched.');
+        console.log('Global AppState has been refreshed.');
+
+        // Directly call the function to re-render the currently visible page
+        if (AppState.isInitialized) {
+            renderCurrentPage();
+        }
 
     } catch (error) {
-        console.error("Refresh App State Error:", error);
+        console.error("Update Global State Error:", error);
         showToast(error.message, true);
     }
 }
@@ -54,22 +64,11 @@ export async function initializeApp() {
     return;
   }
   try {
-    await refreshAppState();
+    await updateGlobalState(); // Use the new function for initialization
     AppState.isInitialized = true;
     document.dispatchEvent(new CustomEvent('app-initialized'));
   } catch (error) {
     console.error("Initialization Error:", error);
     logout();
   }
-}
-
-export function setupModal(modalId, openBtnIds = [], closeBtnId) {
-  const modal = document.getElementById(modalId);
-  if (!modal) return;
-  openBtnIds.forEach(openId => {
-    const openBtn = document.getElementById(openId);
-    if (openBtn) openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
-  });
-  const closeBtn = document.getElementById(closeBtnId);
-  if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
 }
