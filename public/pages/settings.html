@@ -1,0 +1,86 @@
+<!-- public/pages/settings.html -->
+<div class="space-y-8">
+    <!-- Profile Section -->
+    <div class="bg-[#1C1C1E] rounded-2xl">
+        <!-- Accordion Header -->
+        <div id="profile-accordion-header" class="p-6 cursor-pointer flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Profile</h2>
+            <span id="profile-accordion-icon" class="text-xl transition-transform">▶</span>
+        </div>
+        <!-- Accordion Content -->
+        <div id="profile-accordion-content" class="px-6 pb-6 border-t border-gray-700 hidden">
+            <form id="profile-form" class="space-y-4 pt-4">
+                <!-- Profile Picture Section -->
+                <div class="flex flex-col items-center space-y-4">
+                    <img id="profile-avatar-preview" src="https://placehold.co/120x120/FFC700/000?text=A" alt="Profile Avatar" class="w-32 h-32 rounded-full object-cover border-4 border-gray-600">
+                    <input type="file" id="profile-avatar-input" class="hidden" accept="image/*">
+                    <label for="profile-avatar-input" class="cursor-pointer text-yellow-400 font-semibold hover:underline">
+                        Change Picture
+                    </label>
+                </div>
+
+                <div>
+                    <label for="profile-name-input" class="text-sm text-gray-400">Full Name</label>
+                    <input type="text" id="profile-name-input" class="w-full input-base mt-1" required>
+                </div>
+                <div>
+                    <label for="profile-email-input" class="text-sm text-gray-400">Email</label>
+                    <input type="email" id="profile-email-input" class="w-full input-base mt-1" required>
+                </div>
+                <div class="pt-2">
+                    <h3 class="text-lg font-semibold mb-2">Macro Targets (%)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="profile-protein-input" class="text-sm text-gray-400">Protein</label>
+                            <input type="number" id="profile-protein-input" class="w-full input-base mt-1" min="0" max="100" required>
+                        </div>
+                        <div>
+                            <label for="profile-carbs-input" class="text-sm text-gray-400">Carbs</label>
+                            <input type="number" id="profile-carbs-input" class="w-full input-base mt-1" min="0" max="100" required>
+                        </div>
+                        <div>
+                            <label for="profile-fat-input" class="text-sm text-gray-400">Fat</label>
+                            <input type="number" id="profile-fat-input" class="w-full input-base mt-1" min="0" max="100" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right pt-2">
+                    <button type="submit" class="btn-primary w-28 min-h-[44px]">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Goals Section -->
+    <div class="bg-[#1C1C1E] rounded-2xl">
+        <!-- Accordion Header -->
+        <div id="goals-accordion-header" class="p-6 cursor-pointer flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Fitness Goals</h2>
+            <span id="goals-accordion-icon" class="text-xl transition-transform">▶</span>
+        </div>
+        <!-- Accordion Content -->
+        <div id="goals-accordion-content" class="px-6 pb-6 border-t border-gray-700 hidden">
+            <form id="goals-form" class="space-y-4 pt-4">
+                <div>
+                    <label for="goals-calories-input" class="text-sm text-gray-400">Daily Calorie Target (kcal)</label>
+                    <input type="number" id="goals-calories-input" class="w-full input-base mt-1" required>
+                </div>
+                <div>
+                    <label for="goals-water-input" class="text-sm text-gray-400">Daily Water Target (glasses)</label>
+                    <input type="number" id="goals-water-input" class="w-full input-base mt-1" required>
+                </div>
+                 <div>
+                    <label for="goals-type-input" class="text-sm text-gray-400">Primary Goal</label>
+                    <select id="goals-type-input" class="w-full input-base mt-1">
+                        <option value="lose_weight">Lose Weight</option>
+                        <option value="build_muscle">Build Muscle</option>
+                        <option value="maintain">Maintain Fitness</option>
+                    </select>
+                </div>
+                <div class="text-right pt-2">
+                    <button type="submit" class="btn-primary w-28 min-h-[44px]">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<!-- public/pages/calculator.html -->
+<!-- This is the content for the Calculator page -->
+
+<div class="space-y-8">
+    <div class="bg-[#1C1C1E] p-6 rounded-2xl">
+        <h2 class="text-2xl font-bold mb-1">BMI Calculator</h2>
+        <p class="text-gray-400 mb-6">Calculate your Body Mass Index.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input id="bmi-weight" type="number" placeholder="Weight (kg)" class="input-base">
+            <input id="bmi-height" type="number" placeholder="Height (cm)" class="input-base">
+        </div>
+        <button id="calculate-bmi" class="w-full md:w-auto mt-4 btn-primary">Calculate BMI</button>
+        <div id="bmi-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+    </div>
+
+    <div class="bg-[#1C1C1E] p-6 rounded-2xl">
+        <h2 class="text-2xl font-bold mb-1">BMR Calculator</h2>
+        <p class="text-gray-400 mb-6">Estimate your Basal Metabolic Rate.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input id="bmr-age" type="number" placeholder="Age" class="input-base">
+            <select id="bmr-gender" class="input-base">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <input id="bmr-weight" type="number" placeholder="Weight (kg)" class="input-base">
+            <input id="bmr-height" type="number" placeholder="Height (cm)" class="input-base">
+        </div>
+        <button id="calculate-bmr" class="w-full md:w-auto mt-4 btn-primary">Calculate BMR</button>
+        <div id="bmr-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+    </div>
+</div>

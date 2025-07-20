@@ -1,0 +1,272 @@
+<!-- public/pages/workout.html -->
+<!-- This is the content for the Workout page -->
+
+<div class="space-y-12">
+    <!-- Section 1: Actions & Summary -->
+    <section id="actions">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <button id="log-workout-btn" class="bg-yellow-400 text-black font-bold text-lg rounded-xl shadow-lg hover:bg-yellow-500 transition-transform hover:scale-105 p-8 text-center">
+                <span id="log-workout-btn-text">+ Log New Workout</span>
+            </button>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-card p-4 rounded-xl shadow-sm text-center">
+                    <h3 class="text-gray-400 text-sm font-medium">Total Workouts</h3>
+                    <p id="summary-total-workouts" class="text-3xl font-bold text-yellow-400 mt-1">0</p>
+                </div>
+                <div class="bg-card p-4 rounded-xl shadow-sm text-center">
+                    <h3 class="text-gray-400 text-sm font-medium">All-Time Volume (kg)</h3>
+                    <p id="summary-total-volume" class="text-3xl font-bold text-yellow-400 mt-1">0</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Dashboard -->
+    <section id="dashboard">
+         <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Workout Dashboard</h2>
+            <p class="text-gray-400 mt-1">Your command center for progress and insights.</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm lg:col-span-2">
+                <h3 class="text-lg font-semibold text-center mb-4">Consistency</h3>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                        <h4 class="text-gray-400 text-sm font-medium">Current Streak</h4>
+                        <p id="consistency-streak" class="text-3xl font-bold text-yellow-400 mt-1">🔥 0 Days</p>
+                    </div>
+                    <div>
+                        <h4 class="text-gray-400 text-sm font-medium">Avg. This Month</h4>
+                        <p id="consistency-frequency" class="text-3xl font-bold text-yellow-400 mt-1">0 workouts/week</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="ai-analysis-section" class="bg-card p-4 sm:p-6 rounded-xl shadow-sm text-center lg:col-span-2">
+                <button id="analyze-week-btn" class="btn-primary">
+                    ✨ Analyze My Week's Performance
+                </button>
+                <div id="ai-analysis-response" class="hidden mt-4 text-left p-4 bg-[#0D0D0D] rounded-lg gemini-response"></div>
+            </div>
+            
+             <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-semibold text-center mb-4">Volume by Muscle Group</h3>
+                <div class="relative h-64 md:h-80"><canvas id="muscle-group-chart"></canvas></div>
+            </div>
+            
+            <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm">
+                <h3 class="text-lg font-semibold text-center mb-4">Weekly Volume</h3>
+                <div class="relative h-64 md:h-80"><canvas id="volume-chart"></canvas></div>
+            </div>
+
+            <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm lg:col-span-2">
+                <div class="flex flex-col sm:flex-row justify-center items-center text-center gap-4 mb-4">
+                     <h3 class="text-lg font-semibold">Intensity Trend</h3>
+                     <select id="intensity-exercise-filter" class="input-base text-sm">
+                        <option value="all">All Exercises</option>
+                     </select>
+                </div>
+                <div class="relative h-64 md:h-80"><canvas id="intensity-chart"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health Calculators Section -->
+    <section id="calculators">
+        <div class="bg-card rounded-lg">
+            <div id="calculator-accordion-header" class="p-4 cursor-pointer flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">Health Calculators</h2>
+                <span id="calculator-accordion-icon" class="text-xl transition-transform">▶</span>
+            </div>
+            <div id="calculator-accordion-content" class="hidden p-6 border-t border-gray-700 space-y-8">
+                <!-- TDEE Calculator -->
+                <div>
+                    <h3 class="text-xl font-bold mb-1">TDEE Calculator</h3>
+                    <p class="text-gray-400 mb-4">Estimate your Total Daily Energy Expenditure.</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <input id="tdee-age" type="number" placeholder="Age" class="input-base">
+                        <select id="tdee-gender" class="input-base">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        <input id="tdee-weight" type="number" placeholder="Weight (kg)" class="input-base">
+                        <input id="tdee-height" type="number" placeholder="Height (cm)" class="input-base">
+                        <select id="tdee-activity" class="input-base col-span-2 md:col-span-4">
+                            <option value="1.2">Sedentary (office job)</option>
+                            <option value="1.375">Light Exercise (1-2 days/week)</option>
+                            <option value="1.55">Moderate Exercise (3-5 days/week)</option>
+                            <option value="1.725">Heavy Exercise (6-7 days/week)</option>
+                            <option value="1.9">Athlete (2x per day)</option>
+                        </select>
+                    </div>
+                    <button id="calculate-tdee" class="w-full md:w-auto mt-4 btn-primary">Calculate TDEE</button>
+                    <div id="tdee-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+                </div>
+                <!-- Protein Calculator -->
+                <div>
+                    <h3 class="text-xl font-bold mb-1">Protein Calculator</h3>
+                    <p class="text-gray-400 mb-4">Estimate your daily protein needs.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input id="protein-weight" type="number" placeholder="Weight (kg)" class="input-base">
+                        <select id="protein-activity" class="input-base">
+                            <option value="0.8">Sedentary</option>
+                            <option value="1.2">Lightly Active</option>
+                            <option value="1.4">Moderately Active</option>
+                            <option value="1.6">Very Active</option>
+                            <option value="2.0">Extremely Active</option>
+                        </select>
+                         <select id="protein-goal" class="input-base">
+                            <option value="1">Maintain Muscle</option>
+                            <option value="1.1">Build Muscle</option>
+                            <option value="0.9">Fat Loss</option>
+                        </select>
+                    </div>
+                    <button id="calculate-protein" class="w-full md:w-auto mt-4 btn-primary">Calculate Protein</button>
+                    <div id="protein-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+                </div>
+                <!-- BMI Calculator -->
+                <div>
+                    <h3 class="text-xl font-bold mb-1">BMI Calculator</h3>
+                    <p class="text-gray-400 mb-4">Calculate your Body Mass Index.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="bmi-weight" type="number" placeholder="Weight (kg)" class="input-base">
+                        <input id="bmi-height" type="number" placeholder="Height (cm)" class="input-base">
+                    </div>
+                    <button id="calculate-bmi" class="w-full md:w-auto mt-4 btn-primary">Calculate BMI</button>
+                    <div id="bmi-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+                </div>
+                <!-- BMR Calculator -->
+                <div>
+                    <h3 class="text-xl font-bold mb-1">BMR Calculator</h3>
+                    <p class="text-gray-400 mb-4">Estimate your Basal Metabolic Rate.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="bmr-age" type="number" placeholder="Age" class="input-base">
+                        <select id="bmr-gender" class="input-base">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        <input id="bmr-weight" type="number" placeholder="Weight (kg)" class="input-base">
+                        <input id="bmr-height" type="number" placeholder="Height (cm)" class="input-base">
+                    </div>
+                    <button id="calculate-bmr" class="w-full md:w-auto mt-4 btn-primary">Calculate BMR</button>
+                    <div id="bmr-result" class="mt-4 text-center bg-[#0D0D0D] p-4 rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Section 3: Achievements -->
+    <section id="achievements">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Trophy Room</h2>
+            <p class="text-gray-400 mt-1">Celebrate your hard-earned milestones!</p>
+        </div>
+         <div class="bg-card p-6 rounded-xl shadow-sm">
+            <div id="badges-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Badges will be rendered here by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Workout Templates -->
+    <section id="templates">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Workout Templates</h2>
+            <p class="text-gray-400 mt-1">Create routines and start workouts faster.</p>
+        </div>
+        <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm">
+            <div id="templates-list-container" class="space-y-4 mb-6">
+                <!-- Templates will be rendered here by JS -->
+            </div>
+            <button id="create-template-btn" class="w-full text-center p-3 border-2 border-dashed border-gray-600 rounded-lg text-yellow-400 font-semibold hover:bg-gray-800 transition-colors">
+                + Create New Template
+            </button>
+        </div>
+    </section>
+
+    <!-- Section 5: Workout Log -->
+    <section id="log">
+        <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold text-white">Workout Log</h2>
+            <p class="text-gray-400 mt-1">Review your history and get AI coaching on your form.</p>
+        </div>
+        <div class="bg-card p-4 sm:p-6 rounded-xl shadow-sm">
+             <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                <input id="search-input" type="text" placeholder="Search exercises..." class="flex-grow input-base">
+                <div class="flex-shrink-0 grid grid-cols-2 gap-2 items-center">
+                    <input id="start-date-input" type="date" class="w-full input-base">
+                    <input id="end-date-input" type="date" class="w-full input-base">
+                </div>
+            </div>
+            <div id="workout-list-container" class="space-y-3">
+                <!-- Workout logs will be rendered here by JS -->
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modals specific to the Workout page -->
+<div id="workout-modals-container">
+    <div id="workout-form-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 modal-bg" id="modal-bg-overlay-workout"></div>
+        <div class="relative bg-card w-full max-w-2xl rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <form id="workout-form" class="p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-bold">Log a Workout</h2>
+                    <input id="workout-date" type="date" class="input-base text-sm" required>
+                </div>
+                <div id="exercises-container" class="space-y-4"></div>
+                <button type="button" id="add-exercise-btn" class="w-full text-center p-2 border-2 border-dashed border-gray-600 rounded-md text-yellow-400 font-semibold hover:bg-gray-800">+ Add Exercise</button>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="discard-workout-btn" class="bg-red-500/80 text-white px-4 py-2 rounded-md font-semibold">Discard</button>
+                    <button type="submit" class="btn-primary">Save Workout</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="template-form-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 modal-bg" id="modal-bg-overlay-template"></div>
+        <div class="relative bg-card w-full max-w-lg rounded-xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <form id="template-form" class="p-6 space-y-4">
+                <h2 class="text-xl font-bold">Create Workout Template</h2>
+                <input id="template-name-input" type="text" placeholder="Template Name (e.g., Push Day)" class="w-full input-base" required>
+                <h3 class="font-semibold pt-2">Exercises</h3>
+                <div id="template-exercises-container" class="space-y-2"></div>
+                <button type="button" id="add-template-exercise-btn" class="w-full text-sm text-center p-2 border-2 border-dashed border-gray-600 rounded-md text-yellow-400 font-semibold hover:bg-gray-800">+ Add Exercise to Template</button>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancel-template-btn" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Template</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/50 modal-bg"></div>
+        <div class="relative bg-card w-full max-w-sm rounded-xl shadow-2xl p-6 text-center">
+            <h3 id="confirm-modal-title" class="text-lg font-bold mb-2">Are you sure?</h3>
+            <p id="confirm-modal-text" class="text-gray-300 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-center space-x-4">
+                 <button id="confirm-modal-cancel-btn" class="btn-secondary px-6">Cancel</button>
+                 <button id="confirm-modal-confirm-btn" class="bg-red-500 text-white px-6 py-2 rounded-md font-bold">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="achievement-modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+        <div class="fixed inset-0 bg-black/70 modal-bg"></div>
+        <div id="achievement-window" class="relative bg-gray-900 border-2 border-yellow-400 shadow-[0_0_15px_rgba(255,199,0,0.5)] w-full max-w-md rounded-lg p-6 text-center text-white transform scale-95 opacity-0 transition-all duration-300">
+            <h2 class="text-2xl font-bold text-yellow-300 mb-2">[ System Alert ]</h2>
+            <p class="text-lg mb-4">A New Achievement has been Unlocked!</p>
+            <div id="achievement-details" class="bg-gray-800/50 p-4 rounded-md border border-gray-700">
+                <div id="achievement-icon" class="text-7xl mb-3"></div>
+                <h3 id="achievement-name" class="text-2xl font-bold text-yellow-400"></h3>
+                <p id="achievement-desc" class="text-gray-300 mt-2"></p>
+            </div>
+            <button id="achievement-close-btn" class="mt-6 w-full bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-2 px-4 rounded-md transition-colors">
+                Claim Reward
+            </button>
+        </div>
+    </div>
+</div>

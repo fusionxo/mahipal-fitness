@@ -1,0 +1,44 @@
+<!-- public/pages/profile.html -->
+<div class="space-y-8">
+    <!-- Profile Header -->
+    <section class="flex items-center space-x-6 bg-card p-6 rounded-2xl">
+        <img id="profile-page-avatar" src="https://placehold.co/120x120/FFC700/000?text=A" alt="User Avatar" class="w-24 h-24 rounded-full object-cover border-4 border-gray-600">
+        <div>
+            <h1 id="profile-page-name" class="text-3xl font-bold">User Name</h1>
+            <p id="profile-page-email" class="text-gray-400">user@email.com</p>
+        </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <section>
+        <h2 class="text-2xl font-bold mb-4">Today's Activity</h2>
+        <div class="space-y-4">
+            <!-- Daily Stats Summary -->
+            <div class="bg-card p-6 rounded-2xl">
+                <h3 class="text-xl font-semibold mb-3">Today's Summary</h3>
+                <div id="daily-stats-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <!-- JS will populate this -->
+                     <p class="text-gray-500 col-span-full">No stats for today yet.</p>
+                </div>
+            </div>
+
+            <!-- Today's Food Log -->
+            <div class="bg-card p-6 rounded-2xl">
+                <h3 class="text-xl font-semibold mb-3">Today's Food Log</h3>
+                <div id="food-log-list" class="space-y-3">
+                    <!-- JS will populate this -->
+                    <p class="text-gray-500">No food logged today.</p>
+                </div>
+            </div>
+
+            <!-- Recent Workouts -->
+            <div class="bg-card p-6 rounded-2xl">
+                <h3 class="text-xl font-semibold mb-3">Latest Workouts</h3>
+                <div id="recent-workouts-list" class="space-y-3">
+                    <!-- JS will populate this -->
+                    <p class="text-gray-500">No workouts logged yet.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

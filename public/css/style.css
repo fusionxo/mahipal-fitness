@@ -1,0 +1,144 @@
+/* public/css/style.css */
+/* This file contains all custom CSS rules for the entire application. */
+
+/* --- General & Layout --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0D0D0D;
+    color: #E5E7EB;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+canvas { max-width: 100%; height: auto !important; }
+
+/* --- Buttons & Inputs (from workout.html) --- */
+.input-base {
+    background-color: #0D0D0D;
+    border: 1px solid #374151;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    color: #E5E7EB;
+}
+.input-base:focus {
+    outline: none;
+    --tw-ring-color: #FFC700;
+    box-shadow: 0 0 0 2px var(--tw-ring-color);
+}
+.btn-primary {
+    background-color: #FFC700;
+    color: #0D0D0D;
+    font-weight: bold;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+.btn-primary:hover {
+    background-color: #FBBF24;
+}
+.btn-secondary {
+    background-color: #374151;
+    color: #E5E7EB;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+.btn-secondary:hover {
+    background-color: #4B5563;
+}
+
+/* --- Modals & Overlays --- */
+.modal-overlay { transition: opacity 0.3s ease; }
+.modal-content { transition: transform 0.3s ease; }
+.modal-bg { backdrop-filter: blur(5px); }
+#profile-overlay { transition: transform 0.3s ease-in-out; }
+
+/* --- Toast Notification --- */
+.toast { transition: opacity 0.3s, transform 0.3s; }
+
+/* --- Calendar --- */
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; }
+.calendar-day { display: flex; justify-content: center; align-items: center; height: 2.5rem; cursor: pointer; transition: background-color 0.2s; }
+.calendar-day.today { background-color: #FFC700; color: #0D0D0D; border-radius: 50%; }
+.calendar-day:not(.empty):hover { background-color: #333; border-radius: 50%; }
+
+/* --- Nutrition Label Styles --- */
+.nutrition-label {
+    background-color: white;
+    color: black;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    border: 2px solid black;
+    padding: 0.75rem;
+    max-width: 380px;
+    margin: 2rem auto;
+    border-radius: 8px;
+}
+.nutrition-label .nutrition-title {
+    font-size: 2.75rem;
+    font-weight: 900;
+    margin: 0 0 0.25rem;
+    letter-spacing: -1.5px;
+    line-height: 1;
+}
+.nutrition-label .serving-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+}
+.nutrition-label .calories-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 0.25rem;
+}
+.nutrition-label .calories-info h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+.nutrition-label .calories-info h3 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+.nutrition-label .line {
+    border-top: 1px solid black;
+    margin: 0.25rem 0;
+}
+.nutrition-label .line.thick {
+    border-top-width: 10px;
+    margin: 0.5rem 0;
+}
+.nutrition-label .line.medium {
+    border-top-width: 5px;
+}
+.nutrition-label .daily-value-text {
+    font-size: 0.75rem;
+    padding-bottom: 0.25rem;
+}
+.nutrition-label .nutrient-row {
+    padding: 0.125rem 0;
+    font-size: 0.875rem;
+    border-top: 1px solid #000;
+}
+.nutrition-label .footnote {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+}
+
+/* --- Workout Page Specific --- */
+.bg-card { background-color: #1C1C1E; }
+.border-card { border-color: #374151; }
+.gemini-response strong { color: #FFC700; }
+.gemini-response h3 { font-size: 1.125rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; border-bottom: 1px solid #374151; padding-bottom: 0.25rem;}
+.gemini-response ul { list-style-position: inside; margin-left: 0.5rem; }
+.gemini-response li { margin-bottom: 0.25rem; }
+.loader { width: 24px; height: 24px; border: 3px solid #374151; border-top: 3px solid #FFC700; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.badge { filter: grayscale(90%); opacity: 0.6; transition: all 0.3s ease; }
+.badge.unlocked { filter: grayscale(0%); opacity: 1; transform: scale(1.05); }
+.accordion-icon { transition: transform 0.3s ease; }
+#achievement-window { transition: opacity 0.3s, transform 0.3s; }
+#achievement-window.visible { opacity: 1; transform: scale(1); }

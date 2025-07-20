@@ -1,0 +1,88 @@
+<!-- public/pages/food.html -->
+<div class="bg-[#1C1C1E] p-6 rounded-2xl">
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h2 class="text-2xl font-bold">Calorie Chart & Nutrition Facts</h2>
+            <p class="text-gray-400">Search for a food to find nutrition information.</p>
+        </div>
+        <button id="log-food-btn-desktop" class="bg-yellow-400 text-black font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Log Food</span>
+        </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+        <div class="md:col-span-2">
+            <label for="food-search-name" class="text-sm font-semibold text-gray-300 mb-1 block">Food Name</label>
+            <input type="text" id="food-search-name" placeholder="E.g., Chicken Breast" class="w-full bg-[#0D0D0D] border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
+        <div>
+            <label for="food-search-quantity" class="text-sm font-semibold text-gray-300 mb-1 block">Quantity</label>
+            <input type="number" id="food-search-quantity" value="100" class="w-full bg-[#0D0D0D] border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+        </div>
+        <div>
+            <label for="food-search-unit" class="text-sm font-semibold text-gray-300 mb-1 block">Unit</label>
+            <select id="food-search-unit" class="w-full bg-[#0D0D0D] border border-gray-700 rounded-lg py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                <option value="g">g</option>
+                <option value="oz">oz</option>
+                <option value="ml">ml</option>
+                <option value="cup">cup</option>
+                <option value="piece">piece</option>
+            </select>
+        </div>
+        <button id="food-search-btn" class="w-full bg-yellow-400 text-black font-bold py-2 px-4 rounded-lg hover:bg-yellow-500 transition-colors">Search</button>
+    </div>
+     <div id="food-search-results" class="mt-8 text-center text-gray-400">
+        <p>Search results will appear here.</p>
+    </div>
+</div>
+
+<!-- Modals specific to the Food page -->
+<div id="food-modals-container">
+    <div id="log-food-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+        <div class="bg-[#1C1C1E] p-6 rounded-2xl w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Log a Meal</h2>
+                <button id="close-log-food-modal" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <!-- Step 1: Input Form -->
+            <div id="log-food-step-1">
+                <form id="log-food-search-form" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                        <div class="md:col-span-2">
+                            <label for="log-food-name" class="text-sm font-semibold text-gray-300 mb-1 block">Food Name</label>
+                            <input type="text" id="log-food-name" placeholder="E.g., Apple" class="w-full input-base">
+                        </div>
+                        <div>
+                            <label for="log-food-quantity" class="text-sm font-semibold text-gray-300 mb-1 block">Qty</label>
+                            <input type="number" id="log-food-quantity" value="1" class="w-full input-base">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="log-food-unit" class="text-sm font-semibold text-gray-300 mb-1 block">Unit</label>
+                            <select id="log-food-unit" class="w-full input-base">
+                                <option value="piece">piece</option>
+                                <option value="g">g</option>
+                                <option value="oz">oz</option>
+                                <option value="ml">ml</option>
+                                <option value="cup">cup</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" id="log-food-get-nutrition-btn" class="w-full btn-primary">Get Nutrition Info</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Confirmation -->
+            <div id="log-food-step-2" class="hidden">
+                <div id="log-food-results" class="mb-4">
+                    <!-- Nutrition label will be rendered here -->
+                </div>
+                <div class="flex gap-4">
+                    <button id="log-food-back-btn" class="w-full btn-secondary">Back</button>
+                    <button id="log-food-confirm-btn" class="w-full btn-primary">Log This Food</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
