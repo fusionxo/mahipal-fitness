@@ -91,7 +91,7 @@ const handleSave = async (e) => {
         });
         if (!response.ok) throw new Error('Failed to save settings.');
         
-        await updateGlobalState(); // This will refresh the state and re-render if needed
+        await updateGlobalState(); 
         newAvatarData = null; 
         
         document.getElementById('header-avatar-img').src = AppState.profile.avatar;

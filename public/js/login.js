@@ -1,6 +1,6 @@
 // public/js/login.js
 
-const API_BASE_URL = 'https://mahipal-fitness.onrender.com'; // Replace with your actual Render URL
+const API_BASE_URL = 'https://auraflex-app.onrender.com'; // Replace with your actual Render URL
 
 class AuthManager {
   constructor() {

@@ -4,7 +4,7 @@
 import { renderCurrentPage } from './main.js';
 
 // The base URL for your deployed backend. Replace this with your actual Render URL.
-export const API_BASE_URL = 'https://mahipal-fitness.onrender.com';
+export const API_BASE_URL = 'https://auraflex-app.onrender.com';
 
 export const AppState = {
   profile: null,
